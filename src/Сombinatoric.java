@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Сombinatoric{
+public class Сombinatoric {
     // Комбинаторика
 
     // Проверка числа на простоту O(√N)
@@ -78,17 +78,43 @@ public class Сombinatoric{
     }
 
     // Нахождение НОД (алгоритм Евклида) O(log(min(a,b))
-    static long gcd (long a, long b) {
+    static long gcd(long a, long b) {
         if (b == 0)
             return a;
         else
-            return gcd (b, a % b);
+            return gcd(b, a % b);
     }
 
     // Деление по модулю
-    static long div(long a, long b, long M){
+    static long div(long a, long b, long M) {
         // (a/b) (mod M) == a*(b^(-1)) (mod M)
         // b^(-1) == b^(M-2) (mod M)
-        return a*fastPow(b, M-2, M);
+        return a * fastPow(b, M - 2, M);
     }
+
+    // Расширенный алгоритм Евклида
+    static class Gcd {
+        int x, y, g;
+
+        public Gcd(int x, int y, int g) {
+            this.x = x;
+            this.y = y;
+            this.g = g;
+        }
+    }
+
+    public static Gcd gcd(int a, int b) {
+        if (b == 0) {
+            return new Gcd(1, 0, a);
+        }
+        Gcd g = gcd(b, a % b);
+        int x = g.y;
+        int y = g.x - g.y * (a / b);
+        return new Gcd(x, y, g.g);
+    }
+
+    // X0 = Xg*(c/g)
+    // Y0 = Yg*(c/g)
+    // X = X0 + k*(b/g)
+    // Y = Y0 - k*(a/g)
 }

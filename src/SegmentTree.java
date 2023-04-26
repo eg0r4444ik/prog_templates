@@ -6,73 +6,31 @@ public class SegmentTree {
 
     // Дерево отрезков
 
-    public static class segmentTree{
-
-        List<Long> tree = new ArrayList<>();
+    static class segmentTree{
+        long[] tree;
         int size;
 
-        public void init(int n){
+        public void init(int n) {
             size = 1;
-            while(size < n){
-                size *= 2;
-            }
-            for(int i = 0; i < 2*size - 1; i++){
-                tree.add((long) 0);
-            }
+            while(size < n){size*=2;}
+            tree = new long[size*2-1];
         }
 
-        public void set(int i, int v, int x, int lx, int rx){
-            if(rx - lx == 1) {
-                tree.set(x, (long) v);
+        private void set(int i, int v, int x, int lx, int rx){
+            if(rx - lx == 1){
+                tree[x] = v;
                 return;
             }
-            int m = (lx + rx) / 2;
+            int m = (lx+rx)/2;
             if(i < m){
-                set(i, v, 2*x + 1, lx, m);
-            } else{
-                set(i, v, 2*x + 2, m, rx);
+                set(i, v, 2*x+1, lx, m);
+            }else{
+                set(i, v, 2*x+2, m, rx);
             }
-            tree.set(x, tree.get(2*x + 1) + tree.get(2*x +  2));
+            tree[x] = tree[2*x+1] + tree[2*x+2];
         }
-
         public void set(int i, int v){
             set(i, v, 0, 0, size);
-        }
-
-        public void setMin(int i, int v, int x, int lx, int rx){
-            if(rx - lx == 1) {
-                tree.set(x, (long) v);
-                return;
-            }
-            int m = (lx + rx) / 2;
-            if(i < m){
-                setMin(i, v, 2*x + 1, lx, m);
-            } else{
-                setMin(i, v, 2*x + 2, m, rx);
-            }
-            tree.set(x, Math.min(tree.get(2*x + 1), tree.get(2*x +  2)));
-        }
-
-        public void setMin(int i, int v){
-            setMin(i, v, 0, 0, size);
-        }
-
-        public void setMax(int i, int v, int x, int lx, int rx){
-            if(rx - lx == 1) {
-                tree.set(x, (long) v);
-                return;
-            }
-            int m = (lx + rx) / 2;
-            if(i < m){
-                setMax(i, v, 2*x + 1, lx, m);
-            } else{
-                setMax(i, v, 2*x + 2, m, rx);
-            }
-            tree.set(x, Math.max(tree.get(2*x + 1), tree.get(2*x +  2)));
-        }
-
-        public void setMax(int i, int v){
-            setMax(i, v, 0, 0, size);
         }
 
         public long sum(int l, int r, int x, int lx, int rx){
@@ -80,9 +38,9 @@ public class SegmentTree {
                 return 0;
             }
             if(lx >= l && rx <= r){
-                return tree.get(x);
+                return tree[x];
             }
-            int m = (lx + rx) / 2;
+            int m = (lx+rx)/2;
             long s1 = sum(l, r, 2*x + 1, lx, m);
             long s2 = sum(l, r, 2*x + 2, m, rx);
             return s1+s2;
@@ -91,40 +49,54 @@ public class SegmentTree {
         public long sum(int l, int r){
             return sum(l, r, 0, 0, size);
         }
-
-        public long max(int l, int r, int x, int lx, int rx){
-            if(l >= rx || lx >= r){
-                return -Integer.MAX_VALUE;
-            }
-            if(lx >= l && rx <= r){
-                return tree.get(x);
-            }
-            int m = (lx + rx) / 2;
-            long s1 = max(l, r, 2*x + 1, lx, m);
-            long s2 = max(l, r, 2*x + 2, m, rx);
-            return Math.max(s1,s2);
-        }
-
-        public long max(int l, int r){
-            return max(l, r, 0, 0, size);
-        }
-
-        public long min(int l, int r, int x, int lx, int rx){
-            if(l >= rx || lx >= r){
-                return Integer.MAX_VALUE;
-            }
-            if(lx >= l && rx <= r){
-                return tree.get(x);
-            }
-            int m = (lx + rx) / 2;
-            long s1 = min(l, r, 2*x + 1, lx, m);
-            long s2 = min(l, r, 2*x + 2, m, rx);
-            return Math.min(s1,s2);
-        }
-
-        public long min(int l, int r){
-            return min(l, r, 0, 0, size);
-        }
     }
+
+
+    static class segmentTree1{
+
+        private long[] tree;
+        private int size;
+
+        public void init(int n) {
+            size = 1;
+            while(size < n){size*=2;}
+            tree = new long[2*size-1];
+        }
+
+        private void add(int l, int r, long v, int x, int lx, int rx){
+            if(rx <= l || lx >= r){
+                return;
+            }
+            if(lx >= l && rx <= r){
+                tree[x] += v;
+                return;
+            }
+            int m = (lx+rx)/2;
+            add(l, r, v, 2*x+1, lx, m);
+            add(l, r, v, 2*x+2, m, rx);
+        }
+
+        public void add(int l, int r, long v){
+            add(l, r, v, 0, 0, size);
+        }
+
+        private long get(int i, int x, int lx, int rx){
+            if(rx-lx == 1){
+                return tree[x];
+            }
+            int m = (rx+lx)/2;
+            if(i < m){
+                return get(i, 2*x+1, lx, m)+tree[x];
+            }else{
+                return get(i, 2*x+2, m, rx)+tree[x];
+            }
+        }
+
+        public long get(int i){
+            return get(i, 0, 0, size);
+        }
+
+    }
+
 
 }
