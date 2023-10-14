@@ -13,7 +13,11 @@ public class Main {
 //        outputStream = new FileOutputStream(new File("palindrome.out"));
         InputReader in = new InputReader(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
-        solve(in, out);
+        int t = 1;
+        t = in.nextInt();
+        for(int i = 0; i < t; i++){
+            solve(in, out);
+        }
         out.close();
     }
     static void solve(InputReader in, PrintWriter out) {
