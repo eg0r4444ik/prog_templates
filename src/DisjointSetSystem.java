@@ -13,8 +13,9 @@ public class DisjointSetSystem {
         if(x == p[x]){
             return x;
         }
-        p[x] = find(p[x]);
-        return p[x];
+//        p[x] = find(p[x]);
+//        return p[x];
+        return find(p[x]);
     }
 
     public static void union(int x, int y) {
