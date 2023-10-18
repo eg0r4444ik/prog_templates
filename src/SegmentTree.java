@@ -1,102 +1,109 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-public class SegmentTree {
-
-    // Дерево отрезков
-
-    static class segmentTree{
-        long[] tree;
+static class SegmentTree{
+ 
+        static class Node{
+            long modify;
+            long function;
+ 
+            public Node(long modify, long function) {
+                this.modify = modify;
+                this.function = function;
+            }
+        }
+ 
+        long NEUTRAL_ELEMENT = 0;
+        long NO_OPERATION = Long.MIN_VALUE;
+        long MOD = 1000000007;
+ 
+        Node[] tree;
         int size;
-
-        public void init(int n) {
+ 
+        public long op_modify(long a, long b, int len){
+            if(b == NO_OPERATION){
+                return a;
+            }
+            return b*len;
+        }
+ 
+        public long op_func(long a, long b){
+            return a+b;
+        }
+ 
+        public void propagate(int x, int lx, int rx){
+            if(tree[x].modify == NO_OPERATION || rx-lx == 1) return;
+            int m = (lx+rx)/2;
+            tree[2*x+1].modify = op_modify(tree[2*x+1].modify, tree[x].modify, 1);
+            tree[2*x+1].function = op_modify(tree[2*x+1].function, tree[x].modify, m-lx);
+            tree[2*x+2].modify = op_modify(tree[2*x+2].modify, tree[x].modify, 1);
+            tree[2*x+2].function = op_modify(tree[2*x+2].function, tree[x].modify, rx-m);
+            tree[x].modify = NO_OPERATION;
+        }
+ 
+        public void init(int n){
             size = 1;
-            while(size < n){size*=2;}
-            tree = new long[size*2-1];
-        }
-
-        private void set(int i, int v, int x, int lx, int rx){
-            if(rx - lx == 1){
-                tree[x] = v;
-                return;
+            while(size < n){
+                size *= 2;
             }
-            int m = (lx+rx)/2;
-            if(i < m){
-                set(i, v, 2*x+1, lx, m);
-            }else{
-                set(i, v, 2*x+2, m, rx);
-            }
-            tree[x] = tree[2*x+1] + tree[2*x+2];
+ 
+            tree = new Node[2*size-1];
         }
-        public void set(int i, int v){
-            set(i, v, 0, 0, size);
-        }
-
-        public long sum(int l, int r, int x, int lx, int rx){
-            if(l >= rx || lx >= r){
-                return 0;
-            }
-            if(lx >= l && rx <= r){
-                return tree[x];
-            }
-            int m = (lx+rx)/2;
-            long s1 = sum(l, r, 2*x + 1, lx, m);
-            long s2 = sum(l, r, 2*x + 2, m, rx);
-            return s1+s2;
-        }
-
-        public long sum(int l, int r){
-            return sum(l, r, 0, 0, size);
-        }
-    }
-
-
-    static class segmentTree1{
-
-        private long[] tree;
-        private int size;
-
-        public void init(int n) {
-            size = 1;
-            while(size < n){size*=2;}
-            tree = new long[2*size-1];
-        }
-
-        private void add(int l, int r, long v, int x, int lx, int rx){
-            if(rx <= l || lx >= r){
-                return;
-            }
-            if(lx >= l && rx <= r){
-                tree[x] += v;
-                return;
-            }
-            int m = (lx+rx)/2;
-            add(l, r, v, 2*x+1, lx, m);
-            add(l, r, v, 2*x+2, m, rx);
-        }
-
-        public void add(int l, int r, long v){
-            add(l, r, v, 0, 0, size);
-        }
-
-        private long get(int i, int x, int lx, int rx){
+ 
+        public void build(long[] a, int x, int lx, int rx){
             if(rx-lx == 1){
-                return tree[x];
-            }
-            int m = (rx+lx)/2;
-            if(i < m){
-                return get(i, 2*x+1, lx, m)+tree[x];
+                if(lx < a.length) {
+                    tree[x] = new Node(NO_OPERATION, a[lx]);
+                }else{
+                    tree[x] = new Node(NO_OPERATION, 0);
+                }
             }else{
-                return get(i, 2*x+2, m, rx)+tree[x];
+                int m = (lx+rx)/2;
+                build(a, 2*x+1, lx, m);
+                build(a, 2*x+2, m, rx);
+                tree[x] = new Node(NO_OPERATION, op_func(tree[2*x+1].function, tree[2*x+2].function));
             }
         }
-
-        public long get(int i){
-            return get(i, 0, 0, size);
+ 
+        public void build(long[] a){
+            init(a.length);
+            build(a, 0, 0, size);
         }
-
+ 
+ 
+        public void modify(int l, int r, long v, int x, int lx, int rx){
+            propagate(x, lx, rx);
+            if(l >= rx || r <= lx){
+                return;
+            }
+            if(lx >= l && rx <= r){
+                tree[x].modify = op_modify(tree[x].modify, v, 1);
+                tree[x].function = op_modify(tree[x].function, v, rx-lx);
+                return;
+            }
+            int m = (lx+rx)/2;
+            modify(l, r, v, 2*x+1, lx, m);
+            modify(l, r, v, 2*x+2, m, rx);
+            tree[x].function = op_func(tree[2*x+1].function, tree[2*x+2].function);
+            tree[x].function = op_modify(tree[x].function, tree[x].modify, rx-lx);
+        }
+ 
+        public void modify(int l, int r, long v){
+            modify(l, r, v, 0, 0, size);
+        }
+ 
+        public long func(int l, int r, int x, int lx, int rx){
+            propagate(x, lx, rx);
+            if(l >= rx || r <= lx){
+                return NEUTRAL_ELEMENT;
+            }
+            if(lx >= l && rx <= r){
+                return tree[x].function;
+            }
+            int m = (lx+rx)/2;
+            long res1 = func(l, r, 2*x+1, lx, m);
+            long res2 = func(l, r, 2*x+2, m, rx);
+            return op_func(res1, res2);
+        }
+ 
+        public long func(int l, int r){
+            return func(l, r, 0, 0, size);
+        }
     }
-
-
-}
