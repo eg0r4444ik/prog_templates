@@ -20,6 +20,7 @@ public class Main {
         }
         out.close();
     }
+    
     static void solve(InputReader in, PrintWriter out) {
 
     }
