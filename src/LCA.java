@@ -1,4 +1,7 @@
-static class LCA{
+import java.util.ArrayList;
+import java.util.List;
+
+class LCA{
 
         static class Node{
             int val;

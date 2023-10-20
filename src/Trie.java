@@ -1,10 +1,10 @@
-public static class Tree{
+class Trie{
 
     public static class Node{
         int[] to = new int[26];
         boolean term;
     }
-    
+
     Node[] data = new Node[10000000];
     int root = 0;
     int free = 1;

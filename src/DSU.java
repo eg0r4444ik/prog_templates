@@ -1,4 +1,4 @@
-static class DSU{
+class DSU{
         public static int[] p;
         public static int[] r;
 
