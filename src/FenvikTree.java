@@ -8,7 +8,7 @@ public class FenvikTree {
         int start = idx&(idx+1);
         long res = fenv[idx];
         if(start != 0){
-            res += fenvSum(fenv, start-1);
+            res += fenvSum(start-1);
         }
         return res;
     }
