@@ -59,7 +59,7 @@ public class Matching {
             for (int i = 0; i < n; i++) {
                 if(tryKuhn(graph[i])){
                     Arrays.fill(used, false);
-                };
+                }
             }
 
             List<String> res = new ArrayList<>();

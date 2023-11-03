@@ -1,4 +1,4 @@
-static class SparseTable{
+class SparseTable{
         long[][] table;
         int[] pows;
  

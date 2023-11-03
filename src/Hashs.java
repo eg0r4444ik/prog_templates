@@ -2,6 +2,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Hashs {
+    // Дано две строки a и b. Вам требуется узнать, где в строке a можно найти строку b как подстроку и выписать все такие позиции.
     static void solve(Main.InputReader in, PrintWriter out) {
         String a = in.next();
         String b = in.next();

@@ -1,11 +1,10 @@
 import java.util.*;
 
-public class Flow {
-    static class FlowGraph{
+public class FlowGraph{
         static class Edge{
             int to;
             long flow, cost, cap;
-
+ 
             public Edge(int to, long cap, long flow, long cost) {
                 this.to = to;
                 this.cap = cap;
@@ -13,26 +12,26 @@ public class Flow {
                 this.cost = cost;
             }
         }
-
+ 
         static class Pair{
             long flow, cost;
-
+ 
             public Pair(long flow, long cost) {
                 this.flow = flow;
                 this.cost = cost;
             }
         }
-
-        public static List<FlowGraph.Edge> edges;
+ 
+        public static List<Edge> edges;
         public static List<Integer>[] graph;
         static boolean[] used;
         static int[] lst;
-
+ 
         static int[] p;
         static int[] pe;
         static long[] dist;
         static int s, t, n;
-
+ 
         public static void init(int k) {
             n = k;
             edges = new ArrayList<>();
@@ -48,40 +47,40 @@ public class Flow {
                 graph[i] = new ArrayList<>();
             }
         }
-
+ 
         public static void addEdge(int from, int to, long cap, int flow, int cost){
             graph[from].add(edges.size());
             edges.add(new Edge(to, cap, flow, cost));
             graph[to].add(edges.size());
             edges.add(new Edge(from, 0, -flow, -cost));
         }
-
+ 
         public static void addBoundedEdge(int from, int to, long l, long r, int flow, int cost){
             graph[from].add(edges.size());
             edges.add(new Edge(to, r-l, flow, cost));
             graph[to].add(edges.size());
             edges.add(new Edge(from, 0, -flow, -cost));
-
+ 
             graph[from].add(edges.size());
             edges.add(new Edge(n-1, l, flow, cost));
             graph[n-1].add(edges.size());
             edges.add(new Edge(from, 0, -flow, -cost));
-
+ 
             graph[0].add(edges.size());
             edges.add(new Edge(to, l, flow, cost));
             graph[to].add(edges.size());
             edges.add(new Edge(0, 0, -flow, -cost));
         }
-
+ 
         public static long res(int x){
             return edges.get(x).cap-edges.get(x).flow;
         }
-
+ 
         public static long dfs(int x, long f, int k){
             if(used[x]){return 0;}
             if(x == t){return f;}
             used[x] = true;
-
+ 
             for(int e : graph[x]){
                 if(res(e) < k){continue;}
                 long pushed = dfs(edges.get(e).to, Math.min(f, res(e)), k);
@@ -93,7 +92,7 @@ public class Flow {
             }
             return 0;
         }
-
+ 
         static Pair augment(){
             spfa();
             if(p[t] == -1) return new Pair(0, 0);
@@ -115,7 +114,7 @@ public class Flow {
             }
             return new Pair(mf, mc*mf);
         }
-
+ 
         static void spfa(){
             Arrays.fill(p, -1);
             Arrays.fill(pe, -1);
@@ -150,7 +149,7 @@ public class Flow {
                 }
             }
         }
-
+ 
         static boolean bfs(){
             for(int i = 0; i < n; i++){
                 dist[i] = Integer.MAX_VALUE;
@@ -170,13 +169,13 @@ public class Flow {
                     }
                 }
             }
-
+ 
             if(dist[t] != Integer.MAX_VALUE){
                 return true;
             }
             return false;
         }
-
+ 
         static long dinicDfs(int x, long mx){
             if(x == t) return mx;
             int sum = 0;
@@ -193,7 +192,7 @@ public class Flow {
             }
             return sum;
         }
-
+ 
         static int dinic(){
             int flow = 0;
             while(true){
@@ -207,7 +206,7 @@ public class Flow {
             }
             return flow;
         }
-
+ 
         public static long maxFlow(){
             long ans = 0;
             int k = 1 << 30;
@@ -224,7 +223,7 @@ public class Flow {
             }
             return ans;
         }
-
+ 
         public static Pair minCostMaxFlow(){
             long flow = 0;
             long cost = 0;
@@ -239,4 +238,3 @@ public class Flow {
             return new Pair(flow, cost);
         }
     }
-}
