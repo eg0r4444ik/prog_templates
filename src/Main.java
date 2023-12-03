@@ -1,9 +1,5 @@
 import java.io.*;
-import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.SynchronousQueue;
-
-import static java.lang.Math.*;
 
 
 public class Main {
@@ -25,7 +21,7 @@ public class Main {
     }
 
     static void solve(InputReader in, PrintWriter out) throws InterruptedException {
-        
+
     }
 
     static class InputReader {
