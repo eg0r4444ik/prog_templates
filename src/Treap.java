@@ -75,9 +75,4 @@ public class Treap {
         Node node = new Node(pos);
         root = merge(p.l, merge(node, p.r));
     }
-
-//    static void insert(int pos) {
-//        Node node = new Node(pos);
-//        root = merge(root, node);
-//    }
 }
