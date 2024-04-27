@@ -158,4 +158,39 @@ public class Geometry {
         double res = (a*x + b*y + c)/Math.sqrt(a*a + b*b);
         out.print(Math.abs(res));
     }
+
+    static class Pair{
+        double x, y;
+
+        public Pair(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static double calcDist(double x1, double y1, double x2, double y2){
+        return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    }
+
+    static double angleBetweenVectors(double x1, double y1, double x2, double y2){
+        return acos((x1*x2 + y1*y2)/(sqrt(x2*x2+y2*y2)*sqrt(x1*x1+y1*y1)));
+    }
+
+    static double triangleSquare(double x1, double y1, double x2, double y2, double x3, double y3){
+        double a = calcDist(x1, y1, x2, y2);
+        double b = calcDist(x2, y2, x3, y3);
+        double c = calcDist(x1, y1, x3, y3);
+
+        double p = (a+b+c)/2;
+        double s = sqrt(p*(p-a)*(p-b)*(p-c));
+        return a*b*sin(angleBetweenVectors(x1-x2, y1-y2, x3-x2, y3-y2))/2;
+    }
+
+    static Pair rotateDot(double alpha, double x, double y){
+        return new Pair(x*cos(alpha)-y*sin(alpha), x*sin(alpha)+y*cos(alpha));
+    }
+
+    static double calcDistToLine(double a, double b, double c, double x, double y){
+        return abs(a*x + b*y + c)/sqrt(a*a+b*b);
+    }
 }
